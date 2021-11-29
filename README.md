@@ -1,66 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Personnel interview test
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is an implementation of the following interview test assignment:
 
-## About Laravel
+```text
+Personnel LTD. PHP Test 2020
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Create a PHP web application which will contain the features explained below. You can
+either use native code or a PHP framework you are familiar with. Our company prefers using the
+Laravel PHP framework.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1.) Using the provided CSV file (file.csv), create a screen which will upload the CSV file data
+and store it in a database. For this, you will need to:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+• Create a database design based on the CSV file;
+• Create a screen for uploading CSV files;
+• Parse the uploaded CSV file and store the data in the database.
 
-## Learning Laravel
+* No authentication (login screen) is required for this task
+** You can use any frontend or backend library/plugin as you wish
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2.) Using the created database and the imported data from the CSV file, create the following:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2.1.) A table which will display all valid calls*.
 
-## Laravel Sponsors
+2.2) CRUD (Create/Read/Update/Delete) operations for managing calls. The fields
+“User”, “Client” and “Type of Call” should be in a dropdown select.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+2.3.) A table which will display the users. Every record needs to have a “View” button which
+will lead to view 2.4.)
 
-### Premium Partners
+2.4.) A view which will display information (summary) regarding a specific user.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+The following should be displayed:
+• User’s name and surname
+• Average user score (for only valid calls*)
+• A table showing the last 5 call interactions for the user (for only valid calls*)
 
-## Contributing
+* Valid calls are considered valid if the duration is greater than 10
+** No authentication (login screen) is required for this task
+*** You can use any frontend library or backend library as you wish
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Attached files:
+file.csv
+```
 
-## Code of Conduct
+## Assumptions
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+To avoid any ambiguities that arise from the test description, following assumptions were made:
 
-## Security Vulnerabilities
+- Every row in csv file denotes a `Call` entity.
+- Field `User` in csv file containing a user's name uniquely identifies a user entity in the system. Any duplicates in the file refer to the same user entity.
+- Field `Client` in csv file containing a client's name uniquely identifies a client entity. Any duplicates in the file refer to the same client entity.
+- A single `Client` entity can only ever be of one type denoted by the `Client Type` field in csv file.
+- Field `Client Type` is required and always one of `Carer` or `Nurse`.
+- Field `Duration` in csv file is required and always >= 0.
+- Field `External Call Score` in csv file is required and always >= 0.
+- Field `Date` in csv file is required.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Database schema
 
-## License
+After clearing any ambiguities about the data we can define the db schema:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```sql
+CREATE TABLE `user` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `client` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `call` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `client_id` int unsigned NOT NULL,
+  `date` datetime NOT NULL,
+  `duration` int unsigned    NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `score` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `fk_call_user_id_idx` (`user_id`),
+  KEY `fk_call_client_id_idx` (`client_id`),
+  CONSTRAINT `fk_call_client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`),
+  CONSTRAINT `fk_call_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+```
+
+## Implementation details
+
+Implementation of this test assignment will include:
+
+- Laravel framework to match company preference.
+- Server side rendering with Blade templates to keep it simple.
+
+Sketches defining the layout will all pages required to fulfill the requirements [HERE](./UI-mockups.svg).
